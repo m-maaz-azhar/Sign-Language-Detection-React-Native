@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "850085168129",
+    "project_id": "deaf-and-dumb-7017a",
+    "storage_bucket": "deaf-and-dumb-7017a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850085168129:android:7f4d7e73e949e110052c00",
+        "android_client_info": {
+          "package_name": "com.mobileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "850085168129-tmk18713qv1gionpjt09c0uqr9upof87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABC_1wEiaMgQxT9jJsTPjcJMImV8RaZxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "850085168129-tmk18713qv1gionpjt09c0uqr9upof87.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
