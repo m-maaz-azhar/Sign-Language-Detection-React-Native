@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {Text, View, Share as ShareOption} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -5,9 +6,11 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Header from '../../components/Header';
 
 export default function Share({navigation}) {
-  const onShare = async () => {
+  const isFocused = useIsFocused();
+
+  const onShare = () => {
     try {
-      await ShareOption.share({
+      ShareOption.share({
         message:
           'Sign Language Translator App. AppLink Here: https://speak-app.web.app/',
       });
@@ -18,8 +21,10 @@ export default function Share({navigation}) {
   };
 
   useEffect(() => {
-    onShare();
-  });
+    if (isFocused) {
+      onShare();
+    }
+  }, [isFocused]);
 
   return (
     <View>

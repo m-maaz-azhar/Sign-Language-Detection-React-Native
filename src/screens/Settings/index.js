@@ -2,7 +2,6 @@ import {Box, Button, Center, Icon, Image, Input, Spinner} from 'native-base';
 import React, {useState} from 'react';
 import {
   Alert,
-  LogBox,
   PermissionsAndroid,
   ScrollView,
   Text,
@@ -15,8 +14,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
-import {utils} from '@react-native-firebase/app';
 import storage from '@react-native-firebase/storage';
 
 import Header from '../../components/Header';
@@ -28,8 +25,8 @@ export default function Settings() {
   const [name, setname] = useState(user.displayName);
   const [email, setemail] = useState(user.email);
   const [password, setpassword] = useState('');
-  const [address, setaddress] = useState('');
   const [photoURL, setPhotoURL] = useState(user.photoURL);
+  const [updateDP, setUpdateDP] = useState(false);
   const [show, setShow] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setloading] = useState(false);
@@ -45,36 +42,37 @@ export default function Settings() {
       return;
     } else {
       setloading(true);
-      const ProfilePicRef = storage().ref(`/images/${user.uid}.png`);
+      let url = photoURL;
+      if (updateDP) {
+        const ProfilePicRef = storage().ref(`/images/${user.uid}.png`);
 
-      await ProfilePicRef.putFile(photoURL);
+        await ProfilePicRef.putFile(photoURL);
 
-      const url = await storage()
-        .ref(`images/${user.uid}.png`)
-        .getDownloadURL();
-
+        url = await storage().ref(`images/${user.uid}.png`).getDownloadURL();
+      }
       user
         .updateProfile({
           displayName: name,
           photoURL: url,
+          email: email,
         })
         .then(() => {
           setloading(false);
-          Alert.alert('Profile Updated');
+          Alert.alert('Profile Updated', 'Your profile has been updated');
         })
-        .catch(error => {
-          if (error.code === 'auth/email-already-in-use') {
+        .catch(err => {
+          if (err.code === 'auth/email-already-in-use') {
             setError('That email address is already in use!');
             console.log('That email address is already in use!');
           }
 
-          if (error.code === 'auth/invalid-email') {
+          if (err.code === 'auth/invalid-email') {
             setError('That email address is invalid!');
             console.log('That email address is invalid!');
           }
           setloading(false);
 
-          console.error(error);
+          console.error(err);
         });
     }
   };
@@ -98,8 +96,11 @@ export default function Settings() {
             includeBase64: false,
           },
           response => {
-            console.log(response);
-            setPhotoURL(response.assets[0]?.uri);
+            if (response.didCancel) {
+              return;
+            }
+            setPhotoURL(response?.assets[0]?.uri);
+            setUpdateDP(true);
           },
         );
       } else {
@@ -232,33 +233,12 @@ export default function Settings() {
             }}
           />
 
-          <Input
-            value={address}
-            onChangeText={text => setaddress(text)}
-            my={2}
-            InputLeftElement={
-              <Icon
-                as={<MaterialCommunityIcons name="location-enter" />}
-                size="md"
-                m={2}
-                _light={{
-                  color: '#1dd1a1',
-                }}
-                _dark={{
-                  color: 'gray.300',
-                }}
-              />
-            }
-            placeholder="Address" // mx={4}
-            _light={{
-              placeholderTextColor: 'blueGray.400',
-            }}
-            _dark={{
-              placeholderTextColor: 'blueGray.50',
-            }}
-          />
           {error && (
-            <Text color="red.500" fontSize="sm" textAlign="center">
+            <Text
+              color="red.500"
+              style={{color: 'red', textAlign: 'center', marginVertical: 5}}
+              fontSize="sm"
+              textAlign="center">
               {error}
             </Text>
           )}

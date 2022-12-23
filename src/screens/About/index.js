@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Linking, Text, View, TouchableOpacity} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -23,20 +23,28 @@ export default function About() {
       <View style={styles.socialGridContainer}>
         <Text style={styles.Title}>FOLLOW US ON</Text>
         <View style={styles.socialGrid}>
-          <View style={styles.fb}>
+          <TouchableOpacity
+            style={styles.fb}
+            onPress={() => Linking.openURL('https://facebook.com')}>
             <FontAwesome name="facebook" size={24} color={'#fff'} />
-          </View>
-          <View style={styles.twitter}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.twitter}
+            onPress={() => Linking.openURL('http://twitter.com')}>
             <FontAwesome name="twitter" size={24} color={'#fff'} />
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.socialGrid}>
-          <View style={styles.youtube}>
+          <TouchableOpacity
+            style={styles.youtube}
+            onPress={() => Linking.openURL('http://youtube.com')}>
             <FontAwesome name="youtube-play" size={24} color={'#fff'} />
-          </View>
-          <View style={styles.insta}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.insta}
+            onPress={() => Linking.openURL('http://instagram.com')}>
             <FontAwesome name="instagram" size={24} color={'#fff'} />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

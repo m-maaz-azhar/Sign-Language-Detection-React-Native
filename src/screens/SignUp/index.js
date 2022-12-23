@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  Container,
   Text,
   Heading,
   Center,
@@ -24,8 +23,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
-import {utils} from '@react-native-firebase/app';
 import storage from '@react-native-firebase/storage';
 import {launchImageLibrary} from 'react-native-image-picker';
 
@@ -33,9 +30,10 @@ function SignUp({navigation}) {
   const [name, setname] = useState('');
   const [email, setemail] = useState('');
   const [password, setpassword] = useState('');
-  const [address, setaddress] = useState('');
+  const [cpassword, setcpassword] = useState('');
   const [photoURL, setPhotoURL] = useState('');
-  const [show, setShow] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showCPassword, setShowCPassword] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setloading] = useState(false);
 
@@ -47,16 +45,19 @@ function SignUp({navigation}) {
       name.length < 1 ||
       email.length < 1 ||
       password.length < 1 ||
-      photoURL.length < 1
+      photoURL.length < 1 ||
+      cpassword.length < 1
     ) {
       setError('Please fill all the fields');
+      return;
+    } else if (password !== cpassword) {
+      setError('Password and Confirm Password must be same');
       return;
     } else {
       setloading(true);
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(async ({user}) => {
-          console.log('ID CREATED');
           const ProfilePicRef = storage().ref(`/images/${user.uid}.png`);
 
           await ProfilePicRef.putFile(photoURL?.uri);
@@ -220,18 +221,18 @@ function SignUp({navigation}) {
                 }}
               />
             }
-            type={show ? 'text' : 'password'}
+            type={showPassword ? 'text' : 'password'}
             InputRightElement={
               <Button
                 ml={1}
                 roundedLeft={0}
                 roundedRight="md"
                 style={{backgroundColor: 'transparent'}}
-                onPress={() => setShow(!show)}>
+                onPress={() => setShowPassword(!showPassword)}>
                 <MaterialCommunityIcons
                   color="#1dd1a1"
                   size={20}
-                  name={show ? 'eye' : 'eye-off'}
+                  name={showPassword ? 'eye' : 'eye-off'}
                 />
               </Button>
             }
@@ -245,11 +246,11 @@ function SignUp({navigation}) {
           />
 
           <Input
-            onChangeText={text => setaddress(text)}
+            onChangeText={text => setcpassword(text)}
             my={2}
             InputLeftElement={
               <Icon
-                as={<MaterialCommunityIcons name="location-enter" />}
+                as={<MaterialCommunityIcons name="lock" />}
                 size="md"
                 m={2}
                 _light={{
@@ -260,7 +261,22 @@ function SignUp({navigation}) {
                 }}
               />
             }
-            placeholder="Address" // mx={4}
+            type={showCPassword ? 'text' : 'password'}
+            InputRightElement={
+              <Button
+                ml={1}
+                roundedLeft={0}
+                roundedRight="md"
+                style={{backgroundColor: 'transparent'}}
+                onPress={() => setShowCPassword(!showCPassword)}>
+                <MaterialCommunityIcons
+                  color="#1dd1a1"
+                  size={20}
+                  name={showCPassword ? 'eye' : 'eye-off'}
+                />
+              </Button>
+            }
+            placeholder="Confirm Password" // mx={4}
             _light={{
               placeholderTextColor: 'blueGray.400',
             }}
@@ -268,6 +284,7 @@ function SignUp({navigation}) {
               placeholderTextColor: 'blueGray.50',
             }}
           />
+
           {error && (
             <Text color="red.500" fontSize="sm" textAlign="center">
               {error}
@@ -277,7 +294,7 @@ function SignUp({navigation}) {
             onPress={() => attemptSignUp()}
             my={3}
             size="md"
-            style={{backgroundColor: '#1dd1a1'}}
+            style={{backgroundColor: '#1dd1a1', zIndex: 1000}}
             disabled={loading}
             width="90%">
             {loading ? <Spinner color="#fff" /> : 'SIGN UP'}

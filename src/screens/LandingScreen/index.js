@@ -1,20 +1,8 @@
 import React from 'react';
-import {ImageBackground, Image, View, StyleSheet} from 'react-native';
+import {ImageBackground, Image, StyleSheet} from 'react-native';
 import {Box, Heading, Text, Button, Divider} from 'native-base';
-// import auth from '@react-native-firebase/auth';
-// import database from '@react-native-firebase/database';
 
 function LandingScreen({navigation}) {
-  const saveUserToDb = (name, email, uid) => {
-    // database()
-    //   .ref(`/users/${uid}`)
-    //   .set({
-    //     name,
-    //     email,
-    //   })
-    //   .then(() => console.log('Data set.'));
-  };
-
   return (
     <ImageBackground
       source={require('../../assets/bg.jpg')}
@@ -45,7 +33,7 @@ function LandingScreen({navigation}) {
         p={5}
         style={{
           width: '100%',
-          flex: 1,
+          flex: 0.7,
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
         }}
@@ -73,6 +61,8 @@ function LandingScreen({navigation}) {
           Sign In
         </Button>
 
+        <Divider my={5} />
+
         <Button
           onPress={() => navigation.navigate('Sign Up')}
           size="md"
@@ -81,16 +71,15 @@ function LandingScreen({navigation}) {
           colorScheme="emerald">
           Sign Up
         </Button>
-        <Divider my={5} />
 
-        <Button
+        {/* <Button
           onPress={() => console.log('first')}
           size="md"
           variant={'solid'}
           borderRadius={10}
           colorScheme="blue">
           Continue With Facebook
-        </Button>
+        </Button> */}
       </Box>
     </ImageBackground>
   );

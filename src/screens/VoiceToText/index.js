@@ -50,7 +50,7 @@ export default function VoiceToText() {
       },
       body: data,
     };
-    fetch('https://bfea-182-189-216-98.in.ngrok.io/speech-to-text', config)
+    fetch('http://3.109.49.18/speech-to-text', config)
       .then(response => response.json())
       .then(({result}) => {
         if (result?.success) {

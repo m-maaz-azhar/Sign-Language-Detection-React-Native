@@ -1,21 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
   Image,
   PermissionsAndroid,
-  ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import AudioRecorderPlayer, {
-  AVEncoderAudioQualityIOSType,
-  AVEncodingOption,
-  AudioEncoderAndroidType,
-  AudioSet,
-  AudioSourceAndroidType,
-} from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 

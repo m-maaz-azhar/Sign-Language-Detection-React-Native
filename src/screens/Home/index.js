@@ -1,8 +1,7 @@
-import React from 'react';
-import {Text, View} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -15,8 +14,9 @@ import styles from './stylesheet';
 
 export default function Home({navigation}) {
   const user = auth().currentUser;
+  const isFocused = useIsFocused();
 
-  console.log('===<< ', user);
+  useEffect(() => {}, [isFocused]);
 
   return (
     <View style={styles.HomeContainer}>

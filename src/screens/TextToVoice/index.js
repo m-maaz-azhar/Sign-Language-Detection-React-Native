@@ -93,6 +93,9 @@ export default function TextToVoice() {
             maxWidth: 200,
           },
           async response => {
+            if (response?.didCancel) {
+              return;
+            }
             await TextToVoiceReq(response.assets[0]);
             setImageSrc(response.assets[0]);
           },
@@ -124,6 +127,9 @@ export default function TextToVoice() {
             includeBase64: false,
           },
           async response => {
+            if (response?.didCancel) {
+              return;
+            }
             await TextToVoiceReq(response.assets[0]);
             setImageSrc(response.assets[0]);
           },
@@ -154,17 +160,19 @@ export default function TextToVoice() {
       },
       body: data,
     };
-    fetch('https://4afb-182-189-200-109.in.ngrok.io/image-to-voice', config)
+    fetch('http://3.109.49.18/image-to-voice', config)
       .then(response => response.json())
       .then(({result}) => {
         if (result.success) {
-          console.log('===< ', data);
           setAudioUrl(result.url);
           setLoading(false);
         } else {
           setAudioUrl(null);
           setLoading(false);
-          console.log('ERROR');
+          Alert.alert(
+            'Message',
+            "Couldn't convert image to voice, image is not clear",
+          );
         }
       })
       .catch(err => {
