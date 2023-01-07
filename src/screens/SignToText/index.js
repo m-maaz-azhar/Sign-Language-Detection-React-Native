@@ -1,33 +1,48 @@
-import React, {useRef} from 'react';
+import React, {useEffect} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-
-import {RNCamera} from 'react-native-camera';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import {useIsFocused} from '@react-navigation/native';
 
 import Header from '../../components/Header';
 import styles from './stylesheet';
 
 export default function SignToText() {
-  const cameraRef = useRef(null);
-  const takePicture = async () => {
-    if (cameraRef) {
-      const options = {quality: 0.5, base64: true};
-      const data = await cameraRef.takePictureAsync(options);
-      console.log(data.uri);
+  const devices = useCameraDevices();
+  const device = devices.back;
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {}, [isFocused]);
+
+  const getCameraPermission = async () => {
+    try {
+      const cameraPermission = await Camera.getCameraPermissionStatus();
+      if (cameraPermission === 'not-determined') {
+        await Camera.requestCameraPermission();
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    getCameraPermission();
+  }, []);
+
+  if (device == null) {
+    return;
+  }
+
   return (
     <View style={styles.ImageToSignContainer}>
       <Header title={'Sign to Text'} style={{height: 60, paddingTop: 15}} />
       <View style={styles.ScrollContainer}>
-        <RNCamera
-          ref={cameraRef}
-          style={styles.camera}
-          type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.on}
-        />
+        {isFocused && (
+          <Camera style={styles.camera} device={device} isActive={true} />
+        )}
         <View style={styles.snapWrapper}>
-          <TouchableOpacity onPress={takePicture} style={styles.capture}>
-            <Text style={styles.snapText}>Hello</Text>
+          <TouchableOpacity style={styles.capture}>
+            <Text style={styles.snapText}>A</Text>
           </TouchableOpacity>
         </View>
       </View>
