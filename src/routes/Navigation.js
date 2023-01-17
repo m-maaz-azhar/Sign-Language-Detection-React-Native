@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 
 import {
   createDrawerNavigator,
@@ -38,6 +39,21 @@ import Settings from '../screens/Settings';
 function HomeNavigation() {
   const Tab = createBottomTabNavigator();
 
+  const [URL, setURL] = useState('');
+
+  const getAppUrl = async () => {
+    try {
+      const url = await storage().ref(`apk/app-debug.apk`).getDownloadURL();
+      setURL(url);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getAppUrl();
+  }, []);
+
   return (
     <Tab.Navigator initialRouteName="Tools">
       <Tab.Screen
@@ -71,10 +87,7 @@ function HomeNavigation() {
           tabBarInactiveBackgroundColor: '#1dd1a1',
         }}
         name="Share"
-        component={Share}
-        onPress={() => {
-          console.log('test');
-        }}
+        children={() => <Share url={URL} />}
       />
     </Tab.Navigator>
   );
