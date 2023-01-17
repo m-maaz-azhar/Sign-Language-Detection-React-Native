@@ -1,5 +1,5 @@
 import {Box, Button, Center, Icon, Image, Input, Spinner} from 'native-base';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   PermissionsAndroid,
@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  AsyncStorage,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -25,11 +26,24 @@ export default function Settings() {
   const [name, setname] = useState(user.displayName);
   const [email, setemail] = useState(user.email);
   const [password, setpassword] = useState('');
+  const [URL, setURL] = useState('https://874c-182-189-202-18.eu.ngrok.io');
   const [photoURL, setPhotoURL] = useState(user.photoURL);
   const [updateDP, setUpdateDP] = useState(false);
   const [show, setShow] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setloading] = useState(false);
+
+  const _storeData = async BURL => {
+    try {
+      await AsyncStorage.setItem('@BackendURL', BURL);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    _storeData(URL);
+  }, [URL]);
 
   const updateProfile = async () => {
     if (
@@ -225,6 +239,33 @@ export default function Settings() {
               </Button>
             }
             placeholder="Password" // mx={4}
+            _light={{
+              placeholderTextColor: 'blueGray.400',
+            }}
+            _dark={{
+              placeholderTextColor: 'blueGray.50',
+            }}
+          />
+
+          <Input
+            onChangeText={text => setURL(text)}
+            value={URL}
+            my={2}
+            InputLeftElement={
+              <Icon
+                as={<MaterialCommunityIcons name="cellphone-link" />}
+                size="md"
+                m={2}
+                _light={{
+                  color: '#1dd1a1',
+                }}
+                _dark={{
+                  color: 'gray.300',
+                }}
+              />
+            }
+            type={'text'}
+            placeholder="Backend-URL" // mx={4}
             _light={{
               placeholderTextColor: 'blueGray.400',
             }}
