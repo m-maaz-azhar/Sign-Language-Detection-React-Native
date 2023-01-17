@@ -26,7 +26,7 @@ export default function Settings() {
   const [name, setname] = useState(user.displayName);
   const [email, setemail] = useState(user.email);
   const [password, setpassword] = useState('');
-  const [URL, setURL] = useState('https://874c-182-189-202-18.eu.ngrok.io');
+  const [URL, setURL] = useState('');
   const [photoURL, setPhotoURL] = useState(user.photoURL);
   const [updateDP, setUpdateDP] = useState(false);
   const [show, setShow] = useState(false);
