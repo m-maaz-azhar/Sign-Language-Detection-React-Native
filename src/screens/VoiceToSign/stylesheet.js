@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-  VoiceToSignContainer: {
+  VoiceToTextContainer: {
     flex: 1,
     backgroundColor: '#1dd1a1',
   },
@@ -27,26 +27,37 @@ const styles = StyleSheet.create({
   },
   selectorBtns: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    width: 120,
+    width: 30,
   },
-  ImageView: {
-    marginHorizontal: 25,
-    marginTop: 30,
-    borderColor: 'grey',
-    borderWidth: 1,
-    padding: 5,
-  },
-  ImageStyle: {
-    width: '100%',
-    height: 300,
-  },
-  resultText: {
+  InputTitle: {
+    fontSize: 20,
     color: '#323232',
     textAlign: 'center',
-    fontSize: 24,
-    paddingVertical: 10,
+    fontWeight: 'bold',
+    marginVertical: 30,
+  },
+  OutputText: {
+    fontSize: 18,
+    color: '#323232',
+    marginHorizontal: 20,
+  },
+  ResultContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    height: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ResultTitle: {
+    backgroundColor: '#1dd1a1',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginTop: 30,
+    padding: 12,
   },
 });
 

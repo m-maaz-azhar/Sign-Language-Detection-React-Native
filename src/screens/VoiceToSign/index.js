@@ -1,27 +1,97 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Image,
+  ActivityIndicator,
+  Alert,
   PermissionsAndroid,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import {useIsFocused} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '../../components/Header';
 import styles from './stylesheet';
+import Signs from '../../assets/signs';
+import {Image} from 'native-base';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
-export default function VoiceToText() {
+export default function VoiceToSign() {
   const [RecordSecs, setRecordSecs] = useState(0);
-  const [RecordTime, setRecordTime] = useState(0);
-  const [CurrentPositionSec, setCurrentPositionSec] = useState(0);
-  const [CurrentDurationSec, setCurrentDurationSec] = useState(0);
-  const [PlayTime, setPlayTime] = useState(0);
-  const [Duration, setDuration] = useState(0);
+  const [Loading, setLoading] = useState(false);
+  const [OutputText, setOutputText] = useState('');
+  const [Result, setResult] = useState([]);
+  const {width} = useWindowDimensions();
+
+  const isFocused = useIsFocused();
+
+  const ResetAllStates = () => {
+    setOutputText('');
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    ResetAllStates();
+  }, [isFocused]);
+
+  useEffect(() => {
+    let img_paths = [];
+    setLoading(true);
+    OutputText?.split('')?.map(text => {
+      img_paths.push({url: Signs[text.toUpperCase()], text});
+    });
+    setResult([...img_paths]);
+    setLoading(false);
+  }, [OutputText]);
+
+  const SpeechToTextReq = audio => {
+    setLoading(true);
+    const data = new FormData();
+    data.append('name', 'audio');
+    data.append('fileData', {
+      uri: audio,
+      type: 'audio/mp4',
+      name: 'sound.mp4',
+    });
+    const config = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: data,
+    };
+    fetch('http://3.109.49.18/speech-to-text', config)
+      .then(response => response.json())
+      .then(({result}) => {
+        if (result?.success) {
+          console.log('===< ', data);
+          setOutputText(result?.text);
+          setLoading(false);
+        } else {
+          setOutputText(null);
+          setLoading(false);
+          console.log('ERROR');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
+
+  let onStartRecord = async () => {
+    const result = await audioRecorderPlayer.startRecorder();
+    audioRecorderPlayer.addRecordBackListener(e => {
+      setRecordSecs(e.currentPosition);
+      return;
+    });
+    console.log(result);
+  };
 
   const requestRecordingPermission = async () => {
     try {
@@ -41,9 +111,9 @@ export default function VoiceToText() {
         grants['android.permission.RECORD_AUDIO'] ===
           PermissionsAndroid.RESULTS.GRANTED
       ) {
-        console.log('Permissions granted');
+        onStartRecord();
       } else {
-        console.log('All required permissions not granted');
+        Alert.alert('Permission Issue', 'All required permissions not granted');
         return;
       }
     } catch (err) {
@@ -52,54 +122,15 @@ export default function VoiceToText() {
     }
   };
 
-  // audioRecorderPlayer.setSubscriptionDuration(0.09);
-
-  let onStartRecord = async () => {
-    const result = await audioRecorderPlayer.startRecorder();
-    audioRecorderPlayer.addRecordBackListener(e => {
-      setRecordSecs(e.currentPosition);
-      setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-      return;
-    });
-    console.log(result);
-  };
-
   let onStopRecord = async () => {
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     setRecordSecs(0);
-    console.log(result);
+    SpeechToTextReq(result);
   };
-
-  let onStartPlay = async () => {
-    console.log('onStartPlay');
-    const msg = await audioRecorderPlayer.startPlayer();
-    console.log(msg);
-    audioRecorderPlayer.addPlayBackListener(e => {
-      setCurrentPositionSec(e.currentPosition);
-      setCurrentDurationSec(e.duration);
-      setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-      setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
-      return;
-    });
-  };
-
-  let onPausePlay = async () => {
-    await audioRecorderPlayer.pausePlayer();
-  };
-
-  let onStopPlay = async () => {
-    console.log('onStopPlay');
-    audioRecorderPlayer.stopPlayer();
-    audioRecorderPlayer.removePlayBackListener();
-  };
-
-  useEffect(() => {
-    requestRecordingPermission();
-  }, []);
 
   return (
-    <View style={styles.VoiceToSignContainer}>
+    <View style={styles.VoiceToTextContainer}>
       <Header
         title={'Voice To Sign'}
         icon={
@@ -120,7 +151,9 @@ export default function VoiceToText() {
           </View>
           <View style={styles.selectorBtns}>
             <TouchableOpacity
-              onPress={RecordSecs === 0 ? onStartRecord : onStopRecord}>
+              onPress={
+                RecordSecs === 0 ? requestRecordingPermission : onStopRecord
+              }>
               <Entypo
                 name={RecordSecs === 0 ? 'mic' : 'controller-stop'}
                 size={26}
@@ -130,15 +163,45 @@ export default function VoiceToText() {
           </View>
         </View>
         <View>
-          <View style={styles.ImageView}>
-            <Text style={styles.resultText}>SIGN</Text>
-            <Image
-              resizeMode="contain"
-              resizeMethod="auto"
-              style={styles.ImageStyle}
-              source={{uri: 'https://source.unsplash.com/random/300x200/?hand'}}
+          {Result?.length > 0 && (
+            <>
+              <Text style={{...styles.ResultTitle, width: width}}>
+                {Result?.map(item => {
+                  return item?.text;
+                })}
+              </Text>
+              <View style={styles.ResultContainer}>
+                {Result?.map((item, index) => {
+                  return (
+                    <View key={`${item?.url}${index}`}>
+                      <Image
+                        resizeMethod="resize"
+                        resizeMode="contain"
+                        style={{width: width / Result?.length - 5, height: 150}}
+                        source={item?.url}
+                        alt="Sign"
+                      />
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          borderTopColor: '#000',
+                          borderTopWidth: 1,
+                        }}>
+                        {item?.text}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </>
+          )}
+          {Loading && (
+            <ActivityIndicator
+              size={28}
+              style={{marginTop: 20}}
+              color="#1dd1a1"
             />
-          </View>
+          )}
         </View>
       </View>
     </View>
