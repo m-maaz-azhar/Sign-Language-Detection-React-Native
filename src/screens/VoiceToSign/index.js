@@ -65,7 +65,7 @@ export default function VoiceToSign() {
       },
       body: data,
     };
-    fetch('http://3.109.49.18/speech-to-text', config)
+    fetch('http://65.2.169.182/speech-to-text', config)
       .then(response => response.json())
       .then(({result}) => {
         if (result?.success) {
@@ -186,6 +186,7 @@ export default function VoiceToSign() {
                           textAlign: 'center',
                           borderTopColor: '#000',
                           borderTopWidth: 1,
+                          color: '#000',
                         }}>
                         {item?.text}
                       </Text>

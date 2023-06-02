@@ -98,6 +98,7 @@ export default function TextToSign() {
                         textAlign: 'center',
                         borderTopColor: '#000',
                         borderTopWidth: 1,
+                        color: '#000',
                       }}>
                       {item?.text}
                     </Text>

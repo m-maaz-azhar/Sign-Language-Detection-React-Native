@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
   },
   ScrollContainer: {
     backgroundColor: '#F1F5FF',
-    height: '100%',
     borderTopStartRadius: 40,
   },
   selectorContainer: {

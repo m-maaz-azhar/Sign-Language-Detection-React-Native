@@ -15,10 +15,11 @@ export default function About() {
       />
       <Text style={styles.Title}>OUR MISSION</Text>
       <Text style={styles.desc}>
-        Language barrirers between those who are deaf and those who can hear and
-        speak will be eliminated by our system, we will make communication as
-        comprehensive as possible for both hearing and hard at hearing or deaf
-        individuals.
+        Our app is dedicated to breaking down the language barriers between
+        individuals who are deaf or hard of hearing and those who can hear and
+        speak. By leveraging advanced technology, we aim to facilitate
+        comprehensive communication for all, ensuring equal access and
+        understanding for everyone involved. Through our innovative approach.
       </Text>
       <View style={styles.socialGridContainer}>
         <Text style={styles.Title}>FOLLOW US ON</Text>
@@ -33,8 +34,6 @@ export default function About() {
             onPress={() => Linking.openURL('http://twitter.com')}>
             <FontAwesome name="twitter" size={24} color={'#fff'} />
           </TouchableOpacity>
-        </View>
-        <View style={styles.socialGrid}>
           <TouchableOpacity
             style={styles.youtube}
             onPress={() => Linking.openURL('http://youtube.com')}>

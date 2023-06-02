@@ -3,9 +3,11 @@ import {
   ActivityIndicator,
   Alert,
   PermissionsAndroid,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import {useIsFocused} from '@react-navigation/native';
@@ -18,6 +20,10 @@ import styles from './stylesheet';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 export default function VoiceToText() {
+
+  // useDimensions
+  const {width, height} = useWindowDimensions();
+
   const [RecordSecs, setRecordSecs] = useState(0);
   const [Loading, setLoading] = useState(false);
   const [OutputText, setOutputText] = useState('');
@@ -50,7 +56,7 @@ export default function VoiceToText() {
       },
       body: data,
     };
-    fetch('http://3.109.49.18/speech-to-text', config)
+    fetch('http://65.2.169.182/speech-to-text', config)
       .then(response => response.json())
       .then(({result}) => {
         if (result?.success) {
@@ -116,7 +122,7 @@ export default function VoiceToText() {
   };
 
   return (
-    <View style={styles.VoiceToTextContainer}>
+    <ScrollView style={styles.VoiceToTextContainer}>
       <Header
         title={'Voice To Text'}
         icon={
@@ -128,7 +134,7 @@ export default function VoiceToText() {
         }
         style={{borderBottomEndRadius: 40}}
       />
-      <View style={styles.ScrollContainer}>
+      <View style={{...styles.ScrollContainer, minHeight: height}}>
         <View style={styles.selectorContainer}>
           <View>
             <Text style={styles.selectorTitle}>
@@ -148,22 +154,20 @@ export default function VoiceToText() {
             </TouchableOpacity>
           </View>
         </View>
-        <View>
-          {OutputText?.length > 0 && (
-            <>
-              <Text style={styles.InputTitle}>OUTPUT TEXT</Text>
-              <Text style={styles.OutputText}>{OutputText}</Text>
-            </>
-          )}
-          {Loading && (
-            <ActivityIndicator
-              size={28}
-              style={{marginTop: 20}}
-              color="#1dd1a1"
-            />
-          )}
-        </View>
+        {OutputText?.length > 0 && (
+          <>
+            <Text style={styles.InputTitle}>OUTPUT TEXT</Text>
+            <Text style={styles.OutputText}>{OutputText}</Text>
+          </>
+        )}
+        {Loading && (
+          <ActivityIndicator
+            size={28}
+            style={{marginTop: 20}}
+            color="#1dd1a1"
+          />
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 }

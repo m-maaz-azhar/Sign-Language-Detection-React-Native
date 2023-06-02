@@ -52,9 +52,21 @@ export default function Settings() {
       password.length < 1 ||
       photoURL.length < 1
     ) {
+      if (password.length < 1) {
+        setError('Password is required to update profile');
+        return;
+      }
       setError('Please fill all the fields');
       return;
     } else {
+      if (email.match(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/) === null) {
+        setError('Please enter a valid email address');
+        return;
+      }
+      if (photoURL.length < 1) {
+        setError('Please select a profile picture');
+        return;
+      }
       setloading(true);
       let url = photoURL;
       if (updateDP) {
@@ -239,33 +251,6 @@ export default function Settings() {
               </Button>
             }
             placeholder="Password" // mx={4}
-            _light={{
-              placeholderTextColor: 'blueGray.400',
-            }}
-            _dark={{
-              placeholderTextColor: 'blueGray.50',
-            }}
-          />
-
-          <Input
-            onChangeText={text => setURL(text)}
-            value={URL}
-            my={2}
-            InputLeftElement={
-              <Icon
-                as={<MaterialCommunityIcons name="cellphone-link" />}
-                size="md"
-                m={2}
-                _light={{
-                  color: '#1dd1a1',
-                }}
-                _dark={{
-                  color: 'gray.300',
-                }}
-              />
-            }
-            type={'text'}
-            placeholder="Backend-URL" // mx={4}
             _light={{
               placeholderTextColor: 'blueGray.400',
             }}

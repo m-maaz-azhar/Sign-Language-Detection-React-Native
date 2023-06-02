@@ -45,7 +45,6 @@ function SignUp({navigation}) {
       name.length < 1 ||
       email.length < 1 ||
       password.length < 1 ||
-      photoURL.length < 1 ||
       cpassword.length < 1
     ) {
       setError('Please fill all the fields');
@@ -54,6 +53,18 @@ function SignUp({navigation}) {
       setError('Password and Confirm Password must be same');
       return;
     } else {
+      if (email.match(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/) === null) {
+        setError('Please enter a valid email address');
+        return;
+      }
+      if (password.length < 8 || cpassword.length < 8) {
+        setError('Password must be atleast 8 characters long');
+        return;
+      }
+      if (photoURL.length < 1) {
+        setError('Please select a profile picture');
+        return;
+      }
       setloading(true);
       auth()
         .createUserWithEmailAndPassword(email, password)

@@ -1,12 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  AsyncStorage,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 
@@ -19,21 +12,6 @@ export default function SignToNumbers() {
   const [Loading, setLoading] = useState(false);
   const [Detection, setDetection] = useState('Detect');
   const [Answer, setAnswer] = useState('');
-  const [BackendURL, setBackendURL] = useState(null);
-
-  const _retrieveData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@BackendURL');
-      if (value !== null) {
-        console.log(value);
-        setBackendURL(value?.length > 0 ? value : null);
-      }
-    } catch (error) {
-      // Error retrieving data
-      setBackendURL(null);
-      console.log(error);
-    }
-  };
 
   const camera = useRef();
 
@@ -41,7 +19,6 @@ export default function SignToNumbers() {
 
   useEffect(() => {
     setLoading(false);
-    _retrieveData();
   }, [isFocused]);
 
   const getCameraPermission = async () => {
@@ -80,8 +57,8 @@ export default function SignToNumbers() {
       },
       body: data,
     };
-
-    fetch(`${BackendURL}/PredictNumber`, config)
+    console.log('requesting');
+    fetch('http://65.2.169.182:5000/PredictNumber', config)
       .then(response => response.json())
       .then(({result}) => {
         if (result?.success) {
@@ -122,7 +99,7 @@ export default function SignToNumbers() {
         )}
         <View style={styles.snapWrapper}>
           <TouchableOpacity
-            disabled={Loading || !BackendURL}
+            disabled={Loading}
             onPress={() => TakePicture()}
             style={styles.capture}>
             {Loading ? (
@@ -133,14 +110,12 @@ export default function SignToNumbers() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            disabled={Loading || !BackendURL}
+            disabled={Loading}
             onPress={() => setAnswer('')}
             style={styles.capture}>
             <Text style={styles.snapText}>Clear</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            disabled={Loading || !BackendURL}
-            style={styles.AnswerContainer}>
+          <TouchableOpacity disabled={Loading} style={styles.AnswerContainer}>
             <Text style={styles.snapText}>
               {Answer.length > 0 ? Answer : 'Click Detect to get Answer'}
             </Text>

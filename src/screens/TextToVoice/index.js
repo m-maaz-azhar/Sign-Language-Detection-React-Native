@@ -160,7 +160,7 @@ export default function TextToVoice() {
       },
       body: data,
     };
-    fetch('http://3.109.49.18/image-to-voice', config)
+    fetch('http://65.2.169.182/image-to-voice', config)
       .then(response => response.json())
       .then(({result}) => {
         if (result.success) {
@@ -203,9 +203,9 @@ export default function TextToVoice() {
             <TouchableOpacity onPress={requestGalleryPermission}>
               <Entypo name="images" size={26} color="#323232" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={requestCameraPermission}>
+            {/* <TouchableOpacity onPress={requestCameraPermission}>
               <Entypo name="camera" size={26} color="#323232" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
         {ImageSrc && (

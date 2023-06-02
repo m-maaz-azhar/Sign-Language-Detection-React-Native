@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    width: 120,
+    width: 40,
   },
   ImageView: {
     marginHorizontal: 25,
